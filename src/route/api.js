@@ -4,6 +4,16 @@ const CrushReasoningEngine = require('../engine/crushReasoningEngine');
 const memory_agent = require('../controllers/agentController');
 const { getCrushContext } = require('../controllers/kgController');
 const {
+  createUser,
+  getUser,
+  updateUser,
+  createCrush,
+  getCrushProfile,
+  getUserCrushes,
+  updateCrush,
+  deleteCrush
+} = require('../controllers/userController');
+const {
   validateAnalyzeRequest,
   validateEvaluateRequest,
   validateCrushId,
@@ -14,6 +24,72 @@ const {
 // Apply rate limiting and input sanitization to all routes
 router.use(rateLimiter);
 router.use(sanitizeInput);
+
+/**
+ * ======================
+ * USER MANAGEMENT ROUTES
+ * ======================
+ */
+
+/**
+ * POST /api/users
+ * Create a new user
+ */
+router.post('/users', createUser);
+
+/**
+ * GET /api/users/:userId
+ * Get user by userId
+ */
+router.get('/users/:userId', getUser);
+
+/**
+ * PUT /api/users/:userId
+ * Update user profile
+ */
+router.put('/users/:userId', updateUser);
+
+/**
+ * =======================
+ * CRUSH MANAGEMENT ROUTES
+ * =======================
+ */
+
+/**
+ * POST /api/crushes
+ * Create a new crush profile
+ */
+router.post('/crushes', createCrush);
+
+/**
+ * GET /api/crushes/:crushId
+ * Get crush profile by crushId
+ */
+router.get('/crushes/:crushId', getCrushProfile);
+
+/**
+ * GET /api/users/:userId/crushes
+ * Get all crushes for a user
+ */
+router.get('/users/:userId/crushes', getUserCrushes);
+
+/**
+ * PUT /api/crushes/:crushId
+ * Update crush profile
+ */
+router.put('/crushes/:crushId', updateCrush);
+
+/**
+ * DELETE /api/crushes/:crushId
+ * Delete crush profile
+ */
+router.delete('/crushes/:crushId', deleteCrush);
+
+/**
+ * ========================
+ * AI ANALYSIS ROUTES
+ * ========================
+ */
 
 /**
  * POST /api/analyze

@@ -1,8 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const connectMongoDB = require('./config/mongoDb');
-const connectNeo4J = require('./config/neo4j');
 
 // Import routes
 const apiRoutes = require('./route/api');
@@ -21,9 +19,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Database connections
-connectMongoDB();
-connectNeo4J();
+console.log('⚠️  RUNNING IN TEST MODE - Database connections disabled');
+console.log('   To run with databases, use: npm run dev');
 
 // Routes
 app.use('/api', apiRoutes);
@@ -34,33 +31,16 @@ app.get('/', (req, res) => {
     service: 'MALSARA69',
     description: 'AI-powered crush coaching and decision-support system',
     version: '1.0.0',
+    mode: 'TEST MODE - Databases disabled',
     endpoints: {
-      userManagement: {
-        createUser: 'POST /api/users',
-        getUser: 'GET /api/users/:userId',
-        updateUser: 'PUT /api/users/:userId'
-      },
-      crushManagement: {
-        createCrush: 'POST /api/crushes',
-        getCrush: 'GET /api/crushes/:crushId',
-        getUserCrushes: 'GET /api/users/:userId/crushes',
-        updateCrush: 'PUT /api/crushes/:crushId',
-        deleteCrush: 'DELETE /api/crushes/:crushId'
-      },
-      aiAnalysis: {
-        analyze: 'POST /api/analyze',
-        quickAdvice: 'POST /api/quick-advice',
-        evaluate: 'POST /api/evaluate',
-        detectSignals: 'POST /api/detect-signals',
-        getCrushContext: 'GET /api/crush/:crushId'
-      },
-      blueprints: {
-        scenarios: 'GET /api/scenarios',
-        personalities: 'GET /api/personalities'
-      },
-      system: {
-        health: 'GET /api/health'
-      }
+      analyze: 'POST /api/analyze',
+      quickAdvice: 'POST /api/quick-advice',
+      evaluate: 'POST /api/evaluate',
+      detectSignals: 'POST /api/detect-signals',
+      getCrush: 'GET /api/crush/:crushId',
+      scenarios: 'GET /api/scenarios',
+      personalities: 'GET /api/personalities',
+      health: 'GET /api/health'
     },
     documentation: 'https://github.com/yourusername/malsara69'
   });
@@ -89,13 +69,19 @@ app.listen(port, () => {
 ╔═══════════════════════════════════════════╗
 ║                                           ║
 ║         MALSARA69 SERVER RUNNING          ║
+║              (TEST MODE)                  ║
 ║                                           ║
 ║   AI Crush Coaching System                ║
 ║   Port: ${port}                           ║
 ║   Environment: ${process.env.NODE_ENV || 'development'}              ║
+║   ⚠️  Databases: DISABLED                 ║
 ║                                           ║
 ╚═══════════════════════════════════════════╝
   `);
+  console.log('✅ Server ready! Test endpoints that don\'t need databases:');
+  console.log('   curl http://localhost:3001/api/health');
+  console.log('   curl http://localhost:3001/api/scenarios');
+  console.log('   curl http://localhost:3001/api/personalities');
 });
 
 module.exports = app;
