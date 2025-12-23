@@ -70,15 +70,18 @@ const validateCrushId = (req, res, next) => {
 };
 
 const sanitizeInput = (req, res, next) => {
-  if (req.body.message) {
-    // Remove any potentially harmful HTML/script tags
-    req.body.message = req.body.message.replace(/<script.*?>.*?<\/script>/gi, '');
-    req.body.message = req.body.message.trim();
-  }
+  // Only sanitize if req.body exists (for POST/PUT requests)
+  if (req.body) {
+    if (req.body.message) {
+      // Remove any potentially harmful HTML/script tags
+      req.body.message = req.body.message.replace(/<script.*?>.*?<\/script>/gi, '');
+      req.body.message = req.body.message.trim();
+    }
 
-  if (req.body.feedback) {
-    req.body.feedback = req.body.feedback.replace(/<script.*?>.*?<\/script>/gi, '');
-    req.body.feedback = req.body.feedback.trim();
+    if (req.body.feedback) {
+      req.body.feedback = req.body.feedback.replace(/<script.*?>.*?<\/script>/gi, '');
+      req.body.feedback = req.body.feedback.trim();
+    }
   }
 
   next();
@@ -90,7 +93,8 @@ const rateLimiter = (() => {
   const MAX_REQUESTS = 30; // 30 requests per minute
 
   return (req, res, next) => {
-    const userId = req.body.userId || req.ip;
+    // Use userId from body (POST), query (GET), or fallback to IP
+    const userId = (req.body && req.body.userId) || (req.query && req.query.userId) || req.ip;
     const now = Date.now();
 
     if (!requests.has(userId)) {
