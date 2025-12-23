@@ -1,41 +1,83 @@
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
 const connectMongoDB = require('./config/mongoDb');
 const connectNeo4J = require('./config/neo4j');
-const con_collector = require('./controllers/agentController');
-const newChat = require('./controllers/chatcontroller');
-const express = require('express');
-const jwt = require('jsonwebtoken');
-const llmRun = require('./controllers/geminiController');
-const llmresposeConverter = require('./controllers/jsonController');
-const app = express();
-const port = 3001;
-app.use(express.json());
 
-// const payload = { uId : '12', role: 'admin'}
-// const secretKey = "lololo";
-// const options = { expiresIn: '24h' };
-// const token = jwt.sign(payload, secretKey, options);
-// console.log(token);
-const msg = [
-    {   role: "user",
-        content: "Ahh i stuck this"
-    }
-]
-const new_msg = {   role: "assistant",
-        content: "Im in your side don't worry!" }
+// Import routes
+const apiRoutes = require('./route/api');
+
+const app = express();
+const port = process.env.PORT || 3001;
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Request logging middleware
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path}`);
+  next();
+});
+
+// Database connections
 connectMongoDB();
-newChat('U001', 'demo', 'question', new_msg);
 connectNeo4J();
 
+// Routes
+app.use('/api', apiRoutes);
 
-// memory_extractor();
-
-app.post('/', async (req,res) =>{
-    const {msg} = req.body;
-    const response = await con_collector(msg);
-    res.send(response);
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({
+    service: 'MALSARA69',
+    description: 'AI-powered crush coaching and decision-support system',
+    version: '1.0.0',
+    endpoints: {
+      analyze: 'POST /api/analyze',
+      quickAdvice: 'POST /api/quick-advice',
+      evaluate: 'POST /api/evaluate',
+      detectSignals: 'POST /api/detect-signals',
+      getCrush: 'GET /api/crush/:crushId',
+      scenarios: 'GET /api/scenarios',
+      personalities: 'GET /api/personalities',
+      health: 'GET /api/health'
+    },
+    documentation: 'https://github.com/yourusername/malsara69'
+  });
 });
 
-
-app.listen(port, ()=>{
-    console.log(`Server running on ${port} port!`);
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({
+    error: 'Endpoint not found',
+    path: req.path
+  });
 });
+
+// Error handler
+app.use((err, req, res, next) => {
+  console.error('Server error:', err);
+  res.status(500).json({
+    error: 'Internal server error',
+    message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong'
+  });
+});
+
+// Start server
+app.listen(port, () => {
+  console.log(`
+╔═══════════════════════════════════════════╗
+║                                           ║
+║         MALSARA69 SERVER RUNNING          ║
+║                                           ║
+║   AI Crush Coaching System                ║
+║   Port: ${port}                           ║
+║   Environment: ${process.env.NODE_ENV || 'development'}              ║
+║                                           ║
+╚═══════════════════════════════════════════╝
+  `);
+});
+
+module.exports = app;
