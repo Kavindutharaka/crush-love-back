@@ -35,14 +35,32 @@ app.get('/', (req, res) => {
     description: 'AI-powered crush coaching and decision-support system',
     version: '1.0.0',
     endpoints: {
-      analyze: 'POST /api/analyze',
-      quickAdvice: 'POST /api/quick-advice',
-      evaluate: 'POST /api/evaluate',
-      detectSignals: 'POST /api/detect-signals',
-      getCrush: 'GET /api/crush/:crushId',
-      scenarios: 'GET /api/scenarios',
-      personalities: 'GET /api/personalities',
-      health: 'GET /api/health'
+      userManagement: {
+        createUser: 'POST /api/users',
+        getUser: 'GET /api/users/:userId',
+        updateUser: 'PUT /api/users/:userId'
+      },
+      crushManagement: {
+        createCrush: 'POST /api/crushes',
+        getCrush: 'GET /api/crushes/:crushId',
+        getUserCrushes: 'GET /api/users/:userId/crushes',
+        updateCrush: 'PUT /api/crushes/:crushId',
+        deleteCrush: 'DELETE /api/crushes/:crushId'
+      },
+      aiAnalysis: {
+        analyze: 'POST /api/analyze',
+        quickAdvice: 'POST /api/quick-advice',
+        evaluate: 'POST /api/evaluate',
+        detectSignals: 'POST /api/detect-signals',
+        getCrushContext: 'GET /api/crush/:crushId'
+      },
+      blueprints: {
+        scenarios: 'GET /api/scenarios',
+        personalities: 'GET /api/personalities'
+      },
+      system: {
+        health: 'GET /api/health'
+      }
     },
     documentation: 'https://github.com/yourusername/malsara69'
   });

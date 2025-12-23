@@ -17,6 +17,7 @@
     "i": "^0.3.7",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.19.1",
+    "nanoid": "^3.3.7",
     "neo4j-driver": "^6.0.1",
     "npm": "^10.9.4",
     "perf_hooks": "^0.0.1"

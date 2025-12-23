@@ -130,7 +130,101 @@ Connection established (Neo4j)
 
 ---
 
-## STEP 4: API Testing
+## STEP 4: Create User & Crush Profiles
+
+**IMPORTANT:** Before running AI analysis, you need to create a user and crush profile!
+
+### 4.1 Create a User
+
+```bash
+curl -X POST http://localhost:3001/api/users \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "John Doe",
+    "email": "john@example.com",
+    "age": 24,
+    "gender": "male",
+    "bio": "Software developer interested in AI"
+  }'
+```
+
+**Expected Response:**
+```json
+{
+  "success": true,
+  "message": "User created successfully",
+  "user": {
+    "userId": "user_a1b2c3d4e5f6",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "age": 24,
+    "gender": "male",
+    "createdAt": "2024-01-15T10:00:00.000Z"
+  }
+}
+```
+
+**Save your `userId` - you'll need it for all future requests!**
+
+### 4.2 Create a Crush Profile
+
+```bash
+curl -X POST http://localhost:3001/api/crushes \
+  -H "Content-Type: application/json" \
+  -d '{
+    "userId": "user_a1b2c3d4e5f6",
+    "name": "Sarah",
+    "age": 23,
+    "gender": "female",
+    "relationshipStatus": "single",
+    "personality": "introvert",
+    "interests": ["reading", "coffee", "photography"],
+    "whereMetContext": "Met at coffee shop near campus",
+    "notes": "Seems interested, always smiles when we talk"
+  }'
+```
+
+**Expected Response:**
+```json
+{
+  "success": true,
+  "message": "Crush profile created successfully",
+  "crush": {
+    "crushId": "crush_x9y8z7w6v5u4",
+    "userId": "user_a1b2c3d4e5f6",
+    "name": "Sarah",
+    "age": 23,
+    "gender": "female",
+    "relationshipStatus": "single",
+    "personality": "introvert",
+    "currentStage": "early_stage",
+    "createdAt": "2024-01-15T10:05:00.000Z"
+  }
+}
+```
+
+**Save your `crushId` - you'll use this to analyze situations!**
+
+### 4.3 Get User's Crushes
+
+```bash
+curl http://localhost:3001/api/users/user_a1b2c3d4e5f6/crushes
+```
+
+### 4.4 Update Crush Profile
+
+```bash
+curl -X PUT http://localhost:3001/api/crushes/crush_x9y8z7w6v5u4 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "currentStage": "progressing",
+    "notes": "We went for coffee together! She seemed really happy."
+  }'
+```
+
+---
+
+## STEP 5: API Testing
 
 ### Test 1: Health Check ✅
 
@@ -254,7 +348,7 @@ curl "http://localhost:3001/api/crush/sarah_123?userId=test_user_001"
 
 ---
 
-## STEP 5: End-to-End Scenario Test
+## STEP 6: End-to-End Scenario Test
 
 Run this complete scenario to test the full pipeline:
 
@@ -302,7 +396,7 @@ curl -X POST http://localhost:3001/api/evaluate \
 
 ---
 
-## STEP 6: Verify Database Storage
+## STEP 7: Verify Database Storage
 
 ### MongoDB Verification
 ```bash
@@ -336,7 +430,7 @@ RETURN p, r, target
 
 ---
 
-## STEP 7: Error Handling Tests
+## STEP 8: Error Handling Tests
 
 ### Test Invalid Request (No userId)
 ```bash
@@ -376,7 +470,7 @@ curl -X POST http://localhost:3001/api/analyze \
 
 ---
 
-## STEP 8: Performance Monitoring
+## STEP 9: Performance Monitoring
 
 ### Check Response Times
 ```bash
@@ -401,7 +495,7 @@ npm run dev
 
 ---
 
-## STEP 9: Common Issues & Solutions
+## STEP 10: Common Issues & Solutions
 
 ### Issue: MongoDB Connection Failed
 **Solution:**
@@ -443,7 +537,7 @@ docker logs neo4j
 
 ---
 
-## STEP 10: Integration Testing with Postman
+## STEP 11: Integration Testing with Postman
 
 ### Import Collection
 
@@ -483,7 +577,7 @@ Import into Postman and run collection tests.
 
 ---
 
-## STEP 11: Production Readiness Checklist
+## STEP 12: Production Readiness Checklist
 
 Before deploying to production:
 
