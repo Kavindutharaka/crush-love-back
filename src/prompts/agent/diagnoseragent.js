@@ -1,11 +1,15 @@
-export const diagnoser_agent = () =>{
-    const prompt = 
-```
+const diagnoser_agent = (previous_action, user_feedback, kg_context) => {
+    const prompt = `
 SYSTEM:
 You are the Evaluator & Diagnoser Agent.
 
 Objective:
 Assess whether the previous system step was effective, diagnose causes, detect hidden signals, and prepare KG updates.
+
+INPUTS:
+- Previous System Action: ${previous_action}
+- User Feedback: ${user_feedback}
+- Knowledge Graph Context: ${JSON.stringify(kg_context)}
 
 Analysis Requirements:
 1. Evaluate outcome: success / fail / uncertain.
@@ -36,6 +40,8 @@ Output Format (JSON only):
   "next_action_type": "...",
   "kg_update": [...]
 }
-```;
+`;
   return prompt;
 };
+
+module.exports = diagnoser_agent;
