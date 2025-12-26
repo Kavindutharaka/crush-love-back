@@ -28,12 +28,20 @@ const {
   analyzeSignals
 } = require('../blueprints');
 
+// Import Cognitive Engine and Golden Crush Model
+const CognitiveEngine = require('./cognitiveEngine');
+const GoldenCrushModel = require('./goldenCrushModel');
+
 class CrushReasoningEngine {
   constructor(userId, crushId = null) {
     this.userId = userId;
     this.crushId = crushId;
     this.kgContext = null;
     this.sessionContext = null;
+
+    // Initialize Cognitive Engine and Golden Crush Model
+    this.cognitiveEngine = new CognitiveEngine();
+    this.goldenCrushModel = new GoldenCrushModel();
   }
 
   /**
@@ -210,7 +218,7 @@ class CrushReasoningEngine {
     } = options;
 
     try {
-      console.log('>à Starting Crush Reasoning Engine...');
+      console.log('>ï¿½ Starting Crush Reasoning Engine...');
 
       const result = {
         userId: this.userId,
@@ -276,6 +284,160 @@ class CrushReasoningEngine {
         error: error.message
       };
     }
+  }
+
+  /**
+   * COGNITIVE ANALYSIS MODE
+   * Uses Cognitive Engine + Golden Crush Model for advanced decision-making
+   * This is the "brain" that provides the formatted cognitive response
+   *
+   * @param {string} userMessage - User's question/situation
+   * @param {Array} conversationHistory - Recent conversation messages
+   * @returns {Object} Formatted cognitive analysis
+   */
+  async cognitiveAnalysis(userMessage, conversationHistory = []) {
+    try {
+      console.log('[CognitiveEngine] Starting cognitive analysis...');
+
+      // PHASE 1: Golden Crush Model Analysis
+      const goldenAnalysis = this.goldenCrushModel.analyze({
+        userMessage,
+        crushContext: this.kgContext || {},
+        conversationHistory
+      });
+
+      // PHASE 2: Cognitive Engine Processing
+      const cognitiveResult = await this.cognitiveEngine.analyze({
+        userMessage,
+        crushContext: this.kgContext || {},
+        conversationHistory,
+        relationshipStage: this.kgContext?.currentStage || null
+      });
+
+      // PHASE 3: Synthesize both analyses into final response
+      const finalResponse = this.formatCognitiveResponse(
+        goldenAnalysis,
+        cognitiveResult,
+        userMessage
+      );
+
+      console.log('[CognitiveEngine] Analysis complete');
+
+      return {
+        success: true,
+        ...finalResponse
+      };
+
+    } catch (error) {
+      console.error('[CognitiveEngine] Cognitive analysis failed:', error);
+      return {
+        success: false,
+        error: error.message,
+        fallback: 'Be authentic and genuine in your approach'
+      };
+    }
+  }
+
+  /**
+   * Format the cognitive response in the user's requested format
+   */
+  formatCognitiveResponse(goldenAnalysis, cognitiveResult, userMessage) {
+    if (!cognitiveResult.success) {
+      return {
+        error: 'Cognitive analysis failed',
+        fallback: cognitiveResult.fallbackAdvice
+      };
+    }
+
+    const analysis = cognitiveResult.analysis;
+
+    // Build the formatted response
+    return {
+      // === GOLDEN CRUSH MODEL ANALYSIS ===
+      goldenCrushAnalysis: {
+        verdict: goldenAnalysis.onRightTrack.status,
+        message: goldenAnalysis.onRightTrack.message,
+        reasoning: goldenAnalysis.onRightTrack.reasoning,
+        score: {
+          goldenScore: goldenAnalysis.goldenScore,
+          percentile: goldenAnalysis.percentile,
+          interpretation: goldenAnalysis.interpretation.level
+        },
+        signals: {
+          positive: goldenAnalysis.detectedPatterns.positive.map(p => p.pattern),
+          negative: goldenAnalysis.detectedPatterns.negative.map(p => p.pattern),
+          summary: goldenAnalysis.interpretation.message
+        },
+        feedback: goldenAnalysis.feedback,
+        nextMilestone: goldenAnalysis.nextMilestone
+      },
+
+      // === COGNITIVE ENGINE DIAGNOSIS ===
+      cognitiveDiagnosis: {
+        targetProfile: {
+          type: analysis.diagnosis.targetProfile.label,
+          traits: analysis.diagnosis.targetProfile.traits,
+          communicationStyle: analysis.diagnosis.targetProfile.communicationStyle,
+          confidence: `${analysis.diagnosis.targetProfile.confidence}%`
+        },
+        currentState: analysis.diagnosis.emotionalState.label,
+        replyMode: analysis.diagnosis.communicationMode.label,
+        relationshipStage: analysis.diagnosis.relationshipStage.label,
+        analysisReasoning: analysis.diagnosis.analysisReasoning,
+        signals: {
+          positive: analysis.signals.positive,
+          negative: analysis.signals.negative,
+          overallScore: `${Math.round(analysis.signals.overallScore)}%`,
+          interpretation: analysis.signals.interpretation
+        }
+      },
+
+      // === RED FLAGS WARNING ===
+      redFlags: analysis.redFlags.hasRedFlags ? {
+        severity: analysis.redFlags.severity,
+        warnings: analysis.redFlags.flags,
+        recommendation: analysis.redFlags.recommendation
+      } : null,
+
+      // === THE ARCHITECT'S STRATEGY ===
+      strategy: {
+        selectedTactics: analysis.strategy.selectedTactics.map(t => ({
+          name: t.name,
+          description: t.description,
+          whenToUse: t.when_to_use,
+          psychology: t.psychology
+        })),
+        strategicGoal: analysis.strategy.strategicGoal,
+        psychologyExplained: analysis.strategy.psychologyBehind
+      },
+
+      // === EXECUTION (THE MOVE) ===
+      execution: {
+        theScript: analysis.execution.messageScript,
+        alternatives: analysis.execution.alternatives,
+        tone: analysis.execution.tone,
+        timing: {
+          when: analysis.execution.timing.when,
+          duration: analysis.execution.timing.duration
+        },
+        behavioralGuide: analysis.execution.behavioralInstructions
+      },
+
+      // === PREDICTION ===
+      prediction: {
+        successIndicator: analysis.prediction.successIndicator,
+        failState: analysis.prediction.failState,
+        nextSteps: analysis.prediction.nextSteps,
+        timeframe: analysis.prediction.timeframe
+      },
+
+      // === METADATA ===
+      metadata: {
+        confidenceLevel: `${analysis.metadata.confidenceLevel}%`,
+        rulesVersion: analysis.metadata.rulesVersion,
+        timestamp: analysis.metadata.timestamp
+      }
+    };
   }
 
   /**

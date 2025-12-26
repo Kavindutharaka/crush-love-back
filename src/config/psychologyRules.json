@@ -1,0 +1,406 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2024-12-26",
+  "description": "Configurable psychology rules for Cognitive Reasoning Engine - Add, modify, or remove rules as needed",
+
+  "profileTypes": {
+    "extravert": {
+      "label": "Extravert",
+      "indicators": ["talks_a_lot", "many_friends", "enjoys_groups", "shares_openly", "high_energy", "emoji_heavy"],
+      "traits": ["outgoing", "social", "expressive", "energetic"],
+      "communicationStyle": "Direct, enthusiastic, frequent contact",
+      "preferredApproach": "Group activities, playful banter, social proof, high energy conversations",
+      "avoidances": ["long_silences", "too_serious_too_fast", "isolating_activities"]
+    },
+    "introvert": {
+      "label": "Introvert",
+      "indicators": ["quiet", "small_circle", "thoughtful_replies", "prefers_depth", "selective_sharing"],
+      "traits": ["reserved", "reflective", "deep", "selective"],
+      "communicationStyle": "Thoughtful, prefers one-on-one, quality over quantity",
+      "preferredApproach": "Deep conversations, one-on-one time, patience, shared interests, meaningful topics",
+      "avoidances": ["overwhelming_with_attention", "forcing_group_settings", "superficial_talk"]
+    },
+    "emotional": {
+      "label": "Emotional/Sensitive",
+      "indicators": ["mood_swings", "expressive_emojis", "shares_feelings", "dramatic_language", "empathetic"],
+      "traits": ["sensitive", "empathetic", "expressive", "intuitive"],
+      "communicationStyle": "Emotionally open, values feelings, seeks validation",
+      "preferredApproach": "Emotional support, validation, gentle humor, empathy, active listening",
+      "avoidances": ["harsh_teasing", "dismissing_feelings", "being_cold", "overly_logical"]
+    },
+    "logical": {
+      "label": "Logical/Analytical",
+      "indicators": ["practical_replies", "short_messages", "fact_focused", "problem_solver", "minimal_emojis"],
+      "traits": ["rational", "practical", "efficient", "analytical"],
+      "communicationStyle": "Direct, concise, values substance over style",
+      "preferredApproach": "Intellectual topics, ask for advice, respect their time, be genuine",
+      "avoidances": ["excessive_emojis", "drama", "game_playing", "time_wasting"]
+    },
+    "confident": {
+      "label": "Confident/High-Status",
+      "indicators": ["selective_replies", "high_standards", "accomplished", "self_assured", "many_options"],
+      "traits": ["confident", "ambitious", "selective", "high_value"],
+      "communicationStyle": "Selective, values uniqueness, attracted to confidence",
+      "preferredApproach": "Stand out from crowd, show your value, intellectual challenge, respect their status",
+      "avoidances": ["being_needy", "excessive_compliments", "pedestalizing", "being_too_available"]
+    },
+    "playful": {
+      "label": "Playful/Humorous",
+      "indicators": ["jokes_often", "teasing", "memes", "light_hearted", "fun_loving"],
+      "traits": ["fun", "spontaneous", "light_hearted", "adventurous"],
+      "communicationStyle": "Playful, humor-based, enjoys banter",
+      "preferredApproach": "Humor, playful teasing, spontaneity, fun activities, memes",
+      "avoidances": ["being_too_serious", "boring_conversations", "rigidity"]
+    }
+  },
+
+  "emotionalStates": {
+    "happy": {
+      "label": "Happy/Positive",
+      "indicators": ["positive_emojis", "exclamation_marks", "shares_good_news", "energetic_tone"],
+      "suggestedActions": ["share_fun_content", "light_teasing", "make_plans", "match_energy"],
+      "responseStyle": "Upbeat, playful, enthusiastic"
+    },
+    "sad": {
+      "label": "Sad/Down",
+      "indicators": ["negative_emojis", "venting", "low_energy", "withdrawn"],
+      "suggestedActions": ["offer_support", "active_listening", "validation", "be_present"],
+      "responseStyle": "Supportive, gentle, empathetic",
+      "avoid": ["fixing_mode", "dismissing_feelings", "changing_subject_abruptly"]
+    },
+    "stressed": {
+      "label": "Stressed/Busy",
+      "indicators": ["mentions_workload", "delayed_replies", "short_messages", "says_busy"],
+      "suggestedActions": ["respect_space", "brief_support", "offer_help", "wait_for_better_time"],
+      "responseStyle": "Brief, supportive, understanding",
+      "avoid": ["demanding_attention", "long_messages", "adding_pressure"]
+    },
+    "excited": {
+      "label": "Excited/Enthusiastic",
+      "indicators": ["lots_of_emojis", "multiple_messages", "shares_enthusiasm"],
+      "suggestedActions": ["share_excitement", "ask_questions", "engage_deeply"],
+      "responseStyle": "Enthusiastic, engaged, curious"
+    },
+    "neutral": {
+      "label": "Neutral/Normal",
+      "indicators": ["balanced_tone", "regular_pace", "normal_emoji_use"],
+      "suggestedActions": ["casual_conversation", "share_interesting_content", "light_check_in"],
+      "responseStyle": "Natural, balanced, conversational"
+    },
+    "confused": {
+      "label": "Confused/Uncertain",
+      "indicators": ["asks_questions", "seeks_clarity", "uncertain_language"],
+      "suggestedActions": ["provide_clarity", "be_direct", "explain_intentions"],
+      "responseStyle": "Clear, honest, straightforward"
+    }
+  },
+
+  "communicationModes": {
+    "fast_short": {
+      "label": "Fast + Short Replies",
+      "interpretation": "Casual interest or multitasking",
+      "approach": "Keep it light and fun, don't overanalyze",
+      "messagingStyle": "Brief, casual, emoji-friendly"
+    },
+    "slow_long": {
+      "label": "Slow + Long Replies",
+      "interpretation": "High interest and thoughtful engagement",
+      "approach": "Match depth, show you value their effort",
+      "messagingStyle": "Thoughtful, detailed, meaningful"
+    },
+    "seen_no_reply": {
+      "label": "Seen but No Reply",
+      "interpretation": "Busy, not interested in topic, or needs space",
+      "approach": "Give space, don't double-text immediately, wait 24h",
+      "messagingStyle": "Give space, re-engage with new topic later"
+    },
+    "consistent": {
+      "label": "Consistent Pattern",
+      "interpretation": "Stable interest level",
+      "approach": "Maintain current pace and style",
+      "messagingStyle": "Match their consistency"
+    },
+    "initiates": {
+      "label": "Initiates Conversations",
+      "interpretation": "Strong interest signal",
+      "approach": "Reciprocate energy, show appreciation",
+      "messagingStyle": "Engaged, reciprocal, appreciative"
+    }
+  },
+
+  "relationshipStages": {
+    "stranger": {
+      "label": "Stranger",
+      "description": "No prior connection",
+      "goals": ["establish_rapport", "find_common_ground", "make_positive_impression"],
+      "approach": "Friendly, open, curious",
+      "milestones": ["first_conversation", "mutual_interest_discovered"]
+    },
+    "acquaintance": {
+      "label": "Acquaintance",
+      "description": "Basic familiarity, occasional interaction",
+      "goals": ["increase_interaction_frequency", "build_comfort", "show_genuine_interest"],
+      "approach": "Consistent presence, find opportunities to connect",
+      "milestones": ["regular_conversations", "shared_experiences"]
+    },
+    "friendly": {
+      "label": "Friendly",
+      "description": "Regular interaction, comfortable communication",
+      "goals": ["deepen_connection", "create_memorable_moments", "show_unique_value"],
+      "approach": "Be authentic, create inside jokes, share experiences",
+      "milestones": ["inside_jokes", "personal_sharing", "mutual_effort"]
+    },
+    "close_friend": {
+      "label": "Close Friend",
+      "description": "Deep trust, frequent interaction, personal sharing",
+      "goals": ["gauge_romantic_interest", "create_romantic_context", "differentiate_from_friendship"],
+      "approach": "Subtle flirting, test boundaries respectfully, create opportunities",
+      "milestones": ["deep_conversations", "emotional_support", "physical_proximity_comfort"]
+    },
+    "romantic_tension": {
+      "label": "Romantic Tension",
+      "description": "Mutual attraction signals, flirting present",
+      "goals": ["clarify_intentions", "move_toward_commitment", "create_romantic_moments"],
+      "approach": "Direct but respectful, create date opportunities",
+      "milestones": ["flirting_reciprocated", "one_on_one_time", "physical_touch"]
+    },
+    "dating": {
+      "label": "Dating/Relationship",
+      "description": "Mutual romantic interest established",
+      "goals": ["build_healthy_relationship", "maintain_attraction", "deepen_intimacy"],
+      "approach": "Consistent effort, communication, emotional availability",
+      "milestones": ["official_status", "relationship_deepening"]
+    }
+  },
+
+  "strategicTactics": {
+    "active_listening": {
+      "name": "Active Listening",
+      "category": "connection_building",
+      "description": "Show genuine interest by remembering details and asking follow-up questions",
+      "when_to_use": ["any_stage", "building_rapport", "emotional_state_sad"],
+      "example": "You mentioned last week you had an exam - how did it go?",
+      "psychology": "People feel valued when you remember details about their life",
+      "effectiveness": "high",
+      "ethical": true
+    },
+    "mirroring": {
+      "name": "Emotional Mirroring",
+      "category": "rapport_building",
+      "description": "Match their communication style and energy level",
+      "when_to_use": ["building_connection", "any_profile_type"],
+      "example": "If they're excited, show excitement. If thoughtful, be thoughtful.",
+      "psychology": "People connect with those who are similar to them",
+      "effectiveness": "high",
+      "ethical": true
+    },
+    "vulnerability": {
+      "name": "Strategic Vulnerability",
+      "category": "deepening_connection",
+      "description": "Share appropriate personal information to build trust",
+      "when_to_use": ["friendly_to_close_friend_stage", "building_trust"],
+      "example": "I've been feeling stressed about exams too - it helps to talk about it",
+      "psychology": "Vulnerability builds reciprocal trust and emotional intimacy",
+      "effectiveness": "very_high",
+      "ethical": true
+    },
+    "social_proof": {
+      "name": "Social Proof",
+      "category": "value_demonstration",
+      "description": "Naturally mention positive social connections without bragging",
+      "when_to_use": ["confident_profile", "building_attraction"],
+      "example": "My friends and I are planning a hiking trip this weekend",
+      "psychology": "People are attracted to those who are valued by others",
+      "effectiveness": "medium",
+      "ethical": true
+    },
+    "scarcity": {
+      "name": "Healthy Scarcity",
+      "category": "value_demonstration",
+      "description": "Have a full life and communicate you're selective with time",
+      "when_to_use": ["confident_profile", "avoiding_neediness"],
+      "example": "I'm pretty busy this week, but I'd love to catch up on Friday",
+      "psychology": "Value increases with scarcity, but must be genuine",
+      "effectiveness": "medium",
+      "ethical": true
+    },
+    "positive_association": {
+      "name": "Positive Association",
+      "category": "attraction_building",
+      "description": "Create positive emotional experiences together",
+      "when_to_use": ["friendly_stage", "building_attraction"],
+      "example": "Suggest fun activities, share humor, create good memories",
+      "psychology": "People associate you with the emotions they feel around you",
+      "effectiveness": "very_high",
+      "ethical": true
+    },
+    "curiosity_gap": {
+      "name": "Curiosity Gap",
+      "category": "engagement",
+      "description": "Create natural curiosity without being manipulative",
+      "when_to_use": ["keeping_conversation_alive", "playful_profile"],
+      "example": "I have a funny story about what happened today, remind me to tell you later",
+      "psychology": "Open loops create mental tension that seeks closure",
+      "effectiveness": "medium",
+      "ethical": true,
+      "caution": "Use sparingly, always follow through"
+    },
+    "validation": {
+      "name": "Authentic Validation",
+      "category": "connection_building",
+      "description": "Give genuine compliments about character, not just appearance",
+      "when_to_use": ["any_stage", "emotional_profile"],
+      "example": "I really admire how you handle difficult situations with grace",
+      "psychology": "Specific, character-based validation builds deep connection",
+      "effectiveness": "high",
+      "ethical": true
+    },
+    "shared_identity": {
+      "name": "Shared Identity Building",
+      "category": "connection_deepening",
+      "description": "Create 'we' moments and shared experiences",
+      "when_to_use": ["friendly_to_close_stage"],
+      "example": "We both love horror movies - we should watch one together",
+      "psychology": "Shared identity creates bond and sense of partnership",
+      "effectiveness": "very_high",
+      "ethical": true
+    },
+    "respectful_challenge": {
+      "name": "Respectful Challenge",
+      "category": "attraction_building",
+      "description": "Playfully disagree or challenge views (not the person)",
+      "when_to_use": ["confident_profile", "logical_profile", "friendly_stage"],
+      "example": "I actually think [movie] is overrated - change my mind",
+      "psychology": "Intellectual stimulation and non-neediness are attractive",
+      "effectiveness": "medium",
+      "ethical": true
+    },
+    "empowerment": {
+      "name": "Empowerment",
+      "category": "value_addition",
+      "description": "Help them see their best qualities and potential",
+      "when_to_use": ["emotional_state_sad", "close_friend_stage"],
+      "example": "You're so creative - have you thought about pursuing that?",
+      "psychology": "People are attracted to those who make them feel good about themselves",
+      "effectiveness": "high",
+      "ethical": true
+    },
+    "space_respect": {
+      "name": "Space Respect",
+      "category": "boundary_setting",
+      "description": "Give space when needed, don't be clingy",
+      "when_to_use": ["stressed_state", "seen_no_reply", "any_stage"],
+      "example": "I know you're busy - no rush on replying, talk when you're free",
+      "psychology": "Respecting boundaries builds trust and attraction",
+      "effectiveness": "very_high",
+      "ethical": true
+    }
+  },
+
+  "responseGuidelines": {
+    "timing": {
+      "fast_reply": {
+        "when": "They're actively chatting, excited state, or urgent topic",
+        "duration": "within_minutes"
+      },
+      "moderate_reply": {
+        "when": "Normal conversation, neutral state",
+        "duration": "1-3_hours"
+      },
+      "delayed_reply": {
+        "when": "They took long to reply, you're genuinely busy, or giving space",
+        "duration": "match_their_timing_or_longer"
+      },
+      "no_immediate_reply": {
+        "when": "Seen but no reply from them, they seem stressed",
+        "duration": "24_hours_minimum"
+      }
+    },
+    "messageLength": {
+      "short": {
+        "when": "They send short messages, casual vibe, fast-paced chat",
+        "style": "1-2 sentences, emoji okay"
+      },
+      "medium": {
+        "when": "Normal conversation, balanced engagement",
+        "style": "2-4 sentences, natural flow"
+      },
+      "long": {
+        "when": "They send long messages, deep topic, high engagement",
+        "style": "Match their length, show you value their effort"
+      }
+    },
+    "toneGuidelines": {
+      "playful": "Use with playful/extravert profiles, happy states",
+      "supportive": "Use with emotional profiles, sad/stressed states",
+      "intellectual": "Use with logical profiles, deep conversations",
+      "balanced": "Default tone, works with most situations",
+      "flirty": "Use only when romantic_tension stage and signals are reciprocated"
+    }
+  },
+
+  "redFlags": {
+    "your_behavior": [
+      "double_texting_repeatedly",
+      "being_overly_available",
+      "excessive_compliments",
+      "ignoring_their_boundaries",
+      "being_dishonest",
+      "playing_games",
+      "being_clingy",
+      "love_bombing"
+    ],
+    "their_behavior": [
+      "consistently_disrespectful",
+      "only_reaches_out_when_they_need_something",
+      "hot_and_cold_pattern",
+      "never_initiates",
+      "dismisses_your_feelings",
+      "shows_no_interest_in_your_life"
+    ],
+    "situation_warnings": [
+      "they_are_in_relationship",
+      "they_explicitly_said_not_interested",
+      "you_are_in_different_life_stages",
+      "power_imbalance_present"
+    ]
+  },
+
+  "successIndicators": {
+    "positive_signals": [
+      "initiates_conversations",
+      "asks_personal_questions",
+      "remembers_details_about_you",
+      "makes_time_for_you",
+      "laughs_at_your_jokes",
+      "physical_proximity_seeking",
+      "shares_personal_information",
+      "makes_future_plans",
+      "compliments_you",
+      "mirrors_your_behavior"
+    ],
+    "neutral_signals": [
+      "responds_but_doesn't_initiate",
+      "friendly_but_not_flirty",
+      "consistent_but_distant",
+      "group_interaction_only"
+    ],
+    "negative_signals": [
+      "very_delayed_responses",
+      "one_word_answers",
+      "never_initiates",
+      "cancels_plans_repeatedly",
+      "talks_about_other_romantic_interests",
+      "explicitly_friend_zones",
+      "avoids_one_on_one_time"
+    ]
+  },
+
+  "configNotes": {
+    "instructions": "You can modify this JSON to change how the Cognitive Engine works",
+    "addingProfiles": "Add new profile types to 'profileTypes' with indicators and approaches",
+    "addingTactics": "Add new tactics to 'strategicTactics' with description and when to use",
+    "modifyingRules": "Change indicators, approaches, or guidelines to adjust behavior",
+    "removingElements": "Remove any profile, tactic, or rule you don't want the engine to use"
+  }
+}
