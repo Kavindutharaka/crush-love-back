@@ -160,6 +160,54 @@ router.post('/quick-advice', async (req, res) => {
 });
 
 /**
+ * POST /api/cognitive-analysis
+ * COGNITIVE ENGINE - The Brain of MALSARA69
+ * Provides complete analysis using Golden Crush Model + Cognitive Engine
+ *
+ * This is the primary endpoint for getting formatted cognitive analysis
+ * Returns: Golden Crush verdict + Cognitive diagnosis + Strategy + Execution script
+ */
+router.post('/cognitive-analysis', async (req, res) => {
+  try {
+    const { userId, crushId, message, conversationHistory } = req.body;
+
+    if (!userId || !message) {
+      return res.status(400).json({
+        error: 'Missing required fields',
+        required: ['userId', 'message'],
+        optional: ['crushId', 'conversationHistory']
+      });
+    }
+
+    // Initialize reasoning engine with cognitive capabilities
+    const engine = new CrushReasoningEngine(userId, crushId);
+    await engine.initialize();
+
+    // Run cognitive analysis (Golden Crush Model + Cognitive Engine)
+    const result = await engine.cognitiveAnalysis(
+      message,
+      conversationHistory || []
+    );
+
+    // Save to memory system if successful
+    if (result.success) {
+      await memory_agent(message);
+    }
+
+    res.json(result);
+
+  } catch (error) {
+    console.error('❌ Cognitive Analysis Error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Cognitive analysis failed',
+      message: error.message,
+      fallback: 'Be authentic and genuine in your communication'
+    });
+  }
+});
+
+/**
  * GET /api/crush/:crushId
  * Get comprehensive information about a crush
  */
