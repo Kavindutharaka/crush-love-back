@@ -48,6 +48,7 @@ app.get('/', (req, res) => {
         deleteCrush: 'DELETE /api/crushes/:crushId'
       },
       aiAnalysis: {
+        cognitiveAnalysis: 'POST /api/cognitive-analysis (NEW! - The Brain)',
         analyze: 'POST /api/analyze',
         quickAdvice: 'POST /api/quick-advice',
         evaluate: 'POST /api/evaluate',

@@ -10,12 +10,13 @@ const connectGraph = async () =>{
         console.log(USER, PASSWORD);
         const driver = neo4j.driver(URI, neo4j.auth.basic(USER, PASSWORD));
         const serverInfo = await driver.getServerInfo();
-        console.log('Connection established');
+        console.log('✅ Neo4j connection established');
         // console.log(serverInfo);
         return driver;
     }catch(error){
-        console.error(`Error: ${error.message}`);
-        process.exit(1);
+        console.warn(`⚠️  Neo4j connection failed: ${error.message}`);
+        console.warn('⚠️  Server will continue without Neo4j (Cognitive Engine will still work)');
+        return null; // Return null instead of crashing
     }
 }
 
